@@ -1,0 +1,69 @@
+package ola.model;
+
+public class User {
+    private String username;
+
+    public User(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+}
+
+package ola.servlets;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import ola.model.User;
+
+@WebServlet(name = "UserServlet", urlPatterns = {"/users"})
+public class UserServlet extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        // Tworzymy listę użytkowników (tylko nazwy)
+        List<User> userList = new ArrayList<>();
+        userList.add(new User("admin"));
+        userList.add(new User("user1"));
+        userList.add(new User("user2"));
+        userList.add(new User("ola123"));
+
+        // Przekazujemy listę do JSP
+        request.setAttribute("users", userList);
+        request.getRequestDispatcher("users.jsp").forward(request, response);
+    }
+}
+
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.util.List"%>
+<%@page import="ola.model.User"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Lista użytkowników</title>
+</head>
+<body>
+    <h2>Lista użytkowników</h2>
+
+    <ul>
+        <c:forEach var="user" items="${users}">
+            <li>${user.username}</li>
+        </c:forEach>
+    </ul>
+
+</body>
+</html>
