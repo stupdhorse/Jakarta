@@ -1,0 +1,50 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="jakarta.servlet.http.HttpSession"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Zmiana koloru strony</title>
+    <style>
+        body {
+            background-color: <%= session.getAttribute("kolor") != null ? session.getAttribute("kolor") : "white" %>;
+        }
+    </style>
+</head>
+<body>
+    <h2>Wybierz kolor tła:</h2>
+    <form action="ZmienKolorServlet" method="post">
+        <button type="submit" name="kolor" value="lightblue">Niebieski</button>
+        <button type="submit" name="kolor" value="lightgreen">Zielony</button>
+        <button type="submit" name="kolor" value="lightcoral">Czerwony</button>
+    </form>
+</body>
+</html>
+
+package ola.kolor;
+
+import java.io.IOException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+@WebServlet(name = "ZmienKolorServlet", urlPatterns = {"/ZmienKolorServlet"})
+public class ZmienKolorServlet extends HttpServlet {
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Pobierz kolor z formularza
+        String kolor = request.getParameter("kolor");
+
+        // Zapisz kolor w sesji
+        HttpSession session = request.getSession();
+        session.setAttribute("kolor", kolor);
+
+        // Przekieruj z powrotem na stronę główną
+        response.sendRedirect("index.jsp");
+    }
+}
